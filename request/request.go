@@ -12,12 +12,12 @@ import (
 )
 
 type Flight struct {
-	Ident       string
-	FaFlightId  string
-	ActualOff   string
-	ActualOn    string
-	Origin      airport
-	Destination airport
+	Ident       string  `json:"ident"`
+	FaFlightId  string  `json:"fa_flight_id"`
+	ActualOff   string  `json:"actual_off"`
+	ActualOn    string  `json:"actual_on"`
+	Origin      airport `json:"origin"`
+	Destination airport `json:"destination"`
 }
 
 type Flights struct {
@@ -25,8 +25,8 @@ type Flights struct {
 }
 
 type airport struct {
-	Code           string
-	AirportInfoUrl string
+	Code           string `json:"code"`
+	AirportInfoUrl string `json:"airport_info_url"`
 }
 
 const apiUrl = "https://aeroapi.flightaware.com/aeroapi"
