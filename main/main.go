@@ -6,7 +6,7 @@ import (
 	"github.com/floriwan/flightaware/request"
 )
 
-const apiKey = ""
+const apiKey = "UcV4NKtlrBGAsqRmzWuQDMVfATriybCh"
 
 func main() {
 
