@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type flight struct {
+type Flight struct {
 	Ident       string
 	FaFlightId  string
 	ActualOff   string
@@ -21,7 +21,7 @@ type flight struct {
 }
 
 type Flights struct {
-	Flights []flight
+	Flights []Flight
 }
 
 type airport struct {
