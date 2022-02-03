@@ -20,7 +20,7 @@ type flight struct {
 	Destination airport
 }
 
-type flights struct {
+type Flights struct {
 	Flights []flight
 }
 
@@ -35,7 +35,7 @@ const dummyEmptyResponse = `{"flights": [],"links": null,"num_pages": 1}`
 
 var dummyMode bool
 
-func FlightInfo(reg string, apiKey string, dummy bool) flights {
+func FlightInfo(reg string, apiKey string, dummy bool) Flights {
 	dummyMode = dummy
 	flights, err := search(apiUrl, reg, apiKey)
 	if err != nil {
@@ -44,7 +44,7 @@ func FlightInfo(reg string, apiKey string, dummy bool) flights {
 	return flights
 }
 
-func search(url string, reg string, apiKey string) (respF flights, err error) {
+func search(url string, reg string, apiKey string) (respF Flights, err error) {
 	url = url + "/flights/search?query=-idents+" + reg + "+-aboveAltitude+2"
 	if !dummyMode {
 		return sendHttpRequest(url, apiKey)
@@ -58,15 +58,15 @@ func search(url string, reg string, apiKey string) (respF flights, err error) {
 	dec := json.NewDecoder(bytes.NewReader([]byte(responseString)))
 	err = dec.Decode(&respF)
 	if err != nil {
-		return flights{}, fmt.Errorf("response '%v' %v", dummyResponse, err)
+		return Flights{}, fmt.Errorf("response '%v' %v", dummyResponse, err)
 	}
 	return respF, nil
 }
 
-func sendHttpRequest(url string, apiKey string) (respF flights, err error) {
+func sendHttpRequest(url string, apiKey string) (respF Flights, err error) {
 	r, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return flights{}, err
+		return Flights{}, err
 	}
 
 	r.Header.Set("Accept", "application/json; charset=UTF-8")
@@ -77,32 +77,32 @@ func sendHttpRequest(url string, apiKey string) (respF flights, err error) {
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(r)
 	if err != nil {
-		return flights{}, err
+		return Flights{}, err
 	}
 	defer resp.Body.Close()
 
 	log.Printf("< status %v (%v)", resp.StatusCode, http.StatusText(resp.StatusCode))
 
 	if resp.StatusCode != http.StatusOK {
-		return flights{}, fmt.Errorf("response status code was %v (%v)", resp.StatusCode, http.StatusText(resp.StatusCode))
+		return Flights{}, fmt.Errorf("response status code was %v (%v)", resp.StatusCode, http.StatusText(resp.StatusCode))
 	}
 
 	// read all data
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return flights{}, err
+		return Flights{}, err
 	}
 
 	if len(b) == 0 {
 		log.Printf("no data received")
-		return flights{}, nil
+		return Flights{}, nil
 	}
 
 	// decode json response
 	dec := json.NewDecoder(bytes.NewReader(b))
 	err = dec.Decode(&respF)
 	if err != nil {
-		return flights{}, fmt.Errorf("response '%v' %v", string(b), err)
+		return Flights{}, fmt.Errorf("response '%v' %v", string(b), err)
 	}
 
 	return respF, nil
