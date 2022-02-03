@@ -1,6 +1,6 @@
 package main
 
-import "flightaware/request"
+import "github.com/floriwan/flightaware/request"
 
 const apiKey = ""
 
