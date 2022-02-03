@@ -1,11 +1,16 @@
 package main
 
-import "github.com/floriwan/flightaware/request"
+import (
+	"fmt"
 
-const apiKey = ""
+	"github.com/floriwan/flightaware/request"
+)
+
+const apiKey = "UcV4NKtlrBGAsqRmzWuQDMVfATriybCh"
 
 func main() {
 
-	request.FlightInfo("AFL2381", apiKey)
+	flights := request.FlightInfo("AFL2381", apiKey)
 
+	fmt.Printf("response flights %+v", flights)
 }
