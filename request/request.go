@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -30,6 +31,7 @@ type airport struct {
 
 const apiUrl = "https://aeroapi.flightaware.com/aeroapi"
 const dummyResponse = `{"flights":[{"ident":"AFL2381","fa_flight_id":"AFL2381-1643694337-airline-0026","actual_off":"2022-02-03T12:00:53Z","actual_on":null,"predicted_out":null,"predicted_off":null,"predicted_on":null,"predicted_in":null,"predicted_out_source":null,"predicted_off_source":null,"predicted_on_source":null,"predicted_in_source":null,"origin":{"code":"LSGG","airport_info_url":"/airports/LSGG"},"destination":{"code":"UUEE","airport_info_url":"/airports/UUEE"},"waypoints":[],"first_position_time":"2022-02-03T11:45:03Z","last_position":{"fa_flight_id":"AFL2381-1643694337-airline-0026","altitude":11,"altitude_change":"D","groundspeed":141,"heading":75,"latitude":55.97455,"longitude":37.28622,"timestamp":"2022-02-03T15:16:49Z","update_type":"X"},"bounding_box":[56.10626,5.95486,46.08224,37.28622],"ident_prefix":null,"aircraft_type":"B738"}],"links":null,"num_pages":1}`
+const dummyEmptyResponse = `{"flights": [],"links": null,"num_pages": 1}`
 
 var dummyMode bool
 
@@ -48,7 +50,12 @@ func search(url string, reg string, apiKey string) (respF flights, err error) {
 		return sendHttpRequest(url, apiKey)
 	}
 
-	dec := json.NewDecoder(bytes.NewReader([]byte(dummyResponse)))
+	responseString := dummyResponse
+	if reg == "5514" {
+		responseString = dummyEmptyResponse
+	}
+	responseString = strings.Replace(responseString, "AFL2381", reg, -1)
+	dec := json.NewDecoder(bytes.NewReader([]byte(responseString)))
 	err = dec.Decode(&respF)
 	if err != nil {
 		return flights{}, fmt.Errorf("response '%v' %v", dummyResponse, err)
