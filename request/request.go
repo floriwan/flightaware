@@ -45,7 +45,10 @@ func FlightInfo(reg string, apiKey string, dummy bool) Flights {
 }
 
 func search(url string, reg string, apiKey string) (respF Flights, err error) {
-	url = url + "/flights/search?query=-idents+" + reg + "+-aboveAltitude+2"
+	//curl -X GET "https://aeroapi.flightaware.com/aeroapi/flights/9H-QBE" \
+	//curl -X GET "https://aeroapi.flightaware.com/aeroapi/flights/search?query=-identOrReg+9H-QBE" \
+	url = url + "/flights/" + reg
+	url = url + "/flights/search?query=-identOrReg+" + reg + "+-aboveAltitude+2"
 	if !dummyMode {
 		return sendHttpRequest(url, apiKey)
 	}
